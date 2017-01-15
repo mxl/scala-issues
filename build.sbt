@@ -41,6 +41,8 @@ lazy val root = project.in(file("."))
   .settings(commonSettings: _*)
   .settings(
     libraryDependencies ++= Seq(
+      "com.h2database" % "h2" % "1.4.192",
+      "io.getquill" %% "quill-jdbc" % "1.0.1"
     )
   )
   .dependsOn(macrosModule)

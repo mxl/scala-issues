@@ -2,7 +2,7 @@
 
 import io.getquill._
 
-object Main extends App{
+object Main extends App {
   val ctx = new JdbcContext[H2Dialect, Literal]("ctx")
   import ctx._
 

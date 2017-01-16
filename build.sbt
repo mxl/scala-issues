@@ -41,6 +41,7 @@ lazy val root = project.in(file("."))
   .settings(commonSettings: _*)
   .settings(
     libraryDependencies ++= Seq(
+      "io.getquill" %% "quill-async-postgres" % "1.0.2-SNAPSHOT"
     )
   )
   .dependsOn(macrosModule)

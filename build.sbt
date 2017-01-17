@@ -41,6 +41,7 @@ lazy val root = project.in(file("."))
   .settings(commonSettings: _*)
   .settings(
     libraryDependencies ++= Seq(
+      "org.json4s" %% "json4s-native" % "3.5.0"
     )
   )
   .dependsOn(macrosModule)

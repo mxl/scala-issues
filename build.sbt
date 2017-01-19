@@ -2,7 +2,7 @@ name := "scala-template"
 
 lazy val commonSettings = Seq(
   version := "1.0",
-  scalaVersion := "2.11.8",
+  scalaVersion := "2.12.1",
   scalacOptions ++= Seq(
     "-target:jvm-1.8"
     , "-feature"
@@ -41,6 +41,9 @@ lazy val root = project.in(file("."))
   .settings(commonSettings: _*)
   .settings(
     libraryDependencies ++= Seq(
+      "org.springframework.boot" % "spring-boot-starter-web" % "1.4.3.RELEASE",
+      "org.springframework.boot" % "spring-boot-starter-data-jpa" % "1.4.3.RELEASE",
+      "com.google.code.gson" % "gson" % "2.8.0"
     )
   )
   .dependsOn(macrosModule)

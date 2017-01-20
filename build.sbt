@@ -1,46 +1,44 @@
-name := "scala-template"
+name := "quill-multiple-jdbc-contexts"
 
 lazy val commonSettings = Seq(
   version := "1.0",
   scalaVersion := "2.11.8",
   scalacOptions ++= Seq(
-    "-target:jvm-1.8"
-    , "-feature"
-    , "-deprecation"
-    , "-Xfatal-warnings"
-    , "-Xmax-classfile-name", "100"
-    , "-unchecked"
-    , "-language:implicitConversions"
-    , "-language:reflectiveCalls"
-    , "-language:postfixOps"
-    , "-language:higherKinds"
-    , "-encoding", "UTF-8"
-    , "-Yno-adapted-args"
-    , "-Xlint"
-    , "-Ywarn-numeric-widen"
-    , "-Ywarn-value-discard"
-    , "-Xfuture"
-    , "-Xlog-implicits"
+    "-deprecation",
+    "-encoding", "UTF-8",
+    "-feature",
+    "-language:implicitConversions",
+    "-language:higherKinds",
+    "-language:postfixOps",
+    "-language:reflectiveCalls",
+    "-unchecked",
+    "-Xfatal-warnings",
+    "-Xlint",
+    "-Xfuture",
+    "-Yno-adapted-args",
+    "-Ywarn-dead-code",
+    "-Ywarn-numeric-widen",
+    "-Ywarn-value-discard"
   ),
-  javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint"),
   resolvers ++= Seq(
     Resolver.sonatypeRepo("snapshots")
   )
 )
 
-lazy val macrosModule = project.in(file("macro"))
-  .settings(commonSettings: _*)
-  .settings(
-    libraryDependencies ++= Seq(
-      "org.scala-lang" % "scala-reflect",
-      "org.scala-lang" % "scala-compiler"
-    ).map(_  % scalaVersion.value)
-  )
+val defaultDatabase = "jdbc-h2"
+lazy val database = sys.props.getOrElse("database", default = defaultDatabase)
 
 lazy val root = project.in(file("."))
   .settings(commonSettings: _*)
   .settings(
-    libraryDependencies ++= Seq(
+    unmanagedSourceDirectories in Compile ++= Seq(
+      baseDirectory.value / "src" / database / "scala"
     )
   )
-  .dependsOn(macrosModule)
+  .settings(
+    libraryDependencies ++= Seq(
+      "io.getquill" %% "quill-jdbc" % "1.0.2-SNAPSHOT",
+      "mysql"          % "mysql-connector-java" % "5.1.38",
+      "com.h2database" % "h2"                   % "1.4.192"
+    )
+  )

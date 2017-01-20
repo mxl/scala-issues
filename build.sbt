@@ -25,20 +25,27 @@ lazy val commonSettings = Seq(
   )
 )
 
-val defaultDatabase = "jdbc-h2"
-lazy val database = sys.props.getOrElse("database", default = defaultDatabase)
+val quillVersion = "1.0.2-SNAPSHOT"
+val jdbcH2 = "jdbc-h2"
+val asyncPostgres = "async-postgres"
+val defaultDatabase = jdbcH2
+val database = sys.props.getOrElse("database", default = defaultDatabase)
+val contextDependencies = Map(
+  jdbcH2 -> Seq(
+    "io.getquill" %% "quill-jdbc" % quillVersion,
+    "com.h2database" % "h2" % "1.4.192"
+  ),
+  asyncPostgres -> Seq(
+    "io.getquill" %% "quill-async-postgres" % quillVersion
+  )
+)
+
+lazy val contextModule = project.in(file(database))
+  .settings(commonSettings: _*)
+  .settings(
+    libraryDependencies ++= contextDependencies(database)
+  )
 
 lazy val root = project.in(file("."))
   .settings(commonSettings: _*)
-  .settings(
-    unmanagedSourceDirectories in Compile ++= Seq(
-      baseDirectory.value / "src" / database / "scala"
-    )
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      "io.getquill" %% "quill-jdbc" % "1.0.2-SNAPSHOT",
-      "mysql"          % "mysql-connector-java" % "5.1.38",
-      "com.h2database" % "h2"                   % "1.4.192"
-    )
-  )
+  .dependsOn(contextModule)

@@ -1,3 +1,4 @@
+// https://gitter.im/getquill/quill?at=5898f8fefef1d2de52a93cf9
 import io.getquill._
 
 import scala.concurrent.ExecutionContext.Implicits.global

@@ -41,6 +41,7 @@ lazy val root = project.in(file("."))
   .settings(commonSettings: _*)
   .settings(
     libraryDependencies ++= Seq(
+      "io.getquill" %% "quill" % "1.1.0"
     )
   )
   .dependsOn(macrosModule)

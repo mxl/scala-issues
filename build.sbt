@@ -41,6 +41,8 @@ lazy val root = project.in(file("."))
   .settings(commonSettings: _*)
   .settings(
     libraryDependencies ++= Seq(
+      "org.postgresql" % "postgresql" % "9.4.1208",
+      "io.getquill" %% "quill-jdbc" % "1.1.1"
     )
   )
   .dependsOn(macrosModule)

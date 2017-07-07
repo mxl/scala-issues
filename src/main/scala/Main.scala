@@ -1,17 +1,20 @@
 // http://stackoverflow.com/q/43749680/746347
 
-import io.getquill._
-
 object Main extends App {
-  val db = new PostgresJdbcContext[SnakeCase]("db")
 
+  import io.getquill._
+
+  val db = new MirrorContext[MirrorSqlDialect,SnakeCase]
   import db._
 
-  case class Entity(name: String)
+  case class Contact(phone: String) extends Embedded
+  case class Person(id: Int, contact: Contact)
 
-  db.run(
-    for {
-      e <- query[Entity]
-    } yield e.name
-  ).map(Some(_))
+  implicit val personSchemaMeta = schemaMeta[Person]("Person", _.id -> "personId", _.contact.phone -> "homePhone")
+
+  def update(phone: String) = quote {
+    query[Person].filter(_.id == 1).update(_.contact.phone -> lift(phone))
+  }
+
+  println(db.run(update("")).string)
 }

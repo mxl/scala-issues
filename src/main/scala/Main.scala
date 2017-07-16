@@ -1,17 +1,16 @@
-import eu.timepit.refined.api.Refined
 import io.getquill.{CassandraAsyncContext, Literal, MappedEncoding}
+
 import scala.concurrent.{ExecutionContext, Future}
 
 object Main extends App {
-  trait CustomStringCodec {
-    import app._
+  type CustomString = CustomClass[String]
 
-    implicit val decoder: MappedEncoding[CustomString, String] = MappedEncoding[CustomString, String](bname => bname.value)
-    implicit val encoder: MappedEncoding[String, CustomString] = MappedEncoding[String, CustomString](bname => Refined.unsafeApply(bname))
+  trait CustomStringCodec {
+    implicit val encoder: MappedEncoding[CustomString, String] = MappedEncoding[CustomString, String](_.value)
+    implicit val decoder: MappedEncoding[String, CustomString] = MappedEncoding[String, CustomString](s => CustomClass.apply(s))
   }
 
   class TestDAL(val cassandra: CassandraAsyncContext[Literal]) extends CustomStringCodec {
-    import app._
     case class A(name: CustomString)
     import cassandra._
 

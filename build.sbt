@@ -41,7 +41,6 @@ lazy val root = project.in(file("."))
   .settings(commonSettings: _*)
   .settings(
     libraryDependencies ++= Seq(
-      "eu.timepit" %% "refined"            % "0.8.2",
       "io.getquill" %% "quill-cassandra" % "1.3.1-SNAPSHOT"
     )
   )

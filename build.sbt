@@ -41,7 +41,7 @@ lazy val root = project.in(file("."))
   .settings(commonSettings: _*)
   .settings(
     libraryDependencies ++= Seq(
-      "io.getquill" %% "quill-cassandra" % "1.3.1-SNAPSHOT"
+      "io.getquill" %% "quill-cassandra" % "1.3.0"
     )
   )
   .dependsOn(macrosModule)

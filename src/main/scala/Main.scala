@@ -1,28 +1,20 @@
-import io.getquill.{CassandraAsyncContext, Literal, MappedEncoding}
-
-import scala.concurrent.{ExecutionContext, Future}
+import io.getquill.{CassandraAsyncContext, Literal}
 
 object Main extends App {
   type CustomString = CustomClass[String]
 
-  trait CustomStringCodec {
-    implicit val encoder: MappedEncoding[CustomString, String] = MappedEncoding[CustomString, String](_.value)
-    implicit val decoder: MappedEncoding[String, CustomString] = MappedEncoding[String, CustomString](s => CustomClass.apply(s))
-  }
+  class TestDAL(val cassandra: CassandraAsyncContext[Literal]) {
 
-  class TestDAL(val cassandra: CassandraAsyncContext[Literal]) extends CustomStringCodec {
-    case class A(name: CustomString)
     import cassandra._
 
-    def operations(rule: A, name: CustomString)(implicit ec: ExecutionContext): Future[Unit] = {
-      run(query[A].insert(lift(rule))).map(_ => ())
-      val deleteQ = quote(query[A].filter(c => c.name == lift(name)).delete)
-      run(deleteQ)
-    }
+    implicit val decodeCustomString = MappedEncoding[String, CustomString](s => CustomClass.apply(s))
 
-    def get(name: CustomString)(implicit ec: ExecutionContext): Future[List[A]] = {
-      val q = quote(query[A].filter(o => o.name == lift(name)))
-      run(q)
-    }
+    // fails because `LowPriorityImplicits.materializeDecoder` can not provide decoder for `CustomClass` `AnyVal` with private property
+    // and `EncodingDsl.mappedDecoder` with `decodeCustomString` is not used at all
+    // defining decoder explicitly:
+    // implicit val decoder = mappedDecoder(decodeCustomString, stringDecoder)
+    // solves the issue
+    implicitly[Decoder[CustomString]]
   }
+
 }

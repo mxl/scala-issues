@@ -13,7 +13,7 @@ object Main extends App {
 
   implicit val decodeCustomString = MappedEncoding[String, CustomString](s => CustomString.apply(s))
 
-  // fails because `LowPriorityImplicits.materializeDecoder` can not provide decoder for `CustomClass` `AnyVal` with private property
+  // fails because `LowPriorityImplicits.materializeDecoder` can not provide decoder for `CustomClass` `AnyVal` with private constructor
   // and `EncodingDsl.mappedDecoder` with `decodeCustomString` is not used at all
   // defining decoder explicitly:
   // implicit val decoder = mappedDecoder(decodeCustomString, stringDecoder)

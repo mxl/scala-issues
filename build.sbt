@@ -2,7 +2,7 @@ name := "scala-template"
 
 lazy val commonSettings = Seq(
   version := "1.0",
-  scalaVersion := "2.12.1",
+  scalaVersion := "2.12.4",
   scalacOptions ++= Seq(
     "-target:jvm-1.8"
     , "-feature"
